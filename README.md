@@ -1,16 +1,39 @@
-# Familiar: GM Assistant for Foundry VTT
+# 🎲 Familiar: AI-Powered GM Assistant for Foundry VTT
 
-## Production Status: 83.3% Ready
+[![Production Ready](https://img.shields.io/badge/Production-83.3%25-yellow)](https://github.com/yourusername/familiar)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![Python Version](https://img.shields.io/badge/python-3.11-blue)](https://python.org/)
+
+## 🌟 Production Status: 83.3% Ready
 
 **CURRENT STATUS**: Loop 3 Infrastructure & Quality Phase
 **LAST UPDATED**: September 18, 2025
 **SESSION ID**: familiar-loop-3-infrastructure
 
-### Executive Summary
+## 📖 Executive Summary
 
 Familiar is an AI-powered Game Master assistant for Foundry VTT that has successfully completed Loop 2 development with 83.3% production readiness. The Queen-Princess-Drone hierarchical system deployed 21 specialized agents across 6 domains, delivering real implementations validated through zero-tolerance theater detection.
 
-### Development Progress
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/familiar.git
+cd familiar
+
+# Install dependencies
+npm install
+pip install -r requirements.txt
+
+# Start the development server
+npm run dev
+
+# Run tests
+npm test
+```
+
+## 📊 Development Progress
 
 #### ✅ Loop 1: Planning & Risk Mitigation (COMPLETE)
 - **Risk Reduction**: 15% → 2.8% failure probability through 5 iterations
@@ -29,7 +52,7 @@ Familiar is an AI-powered Game Master assistant for Foundry VTT that has success
 - **Theater Elimination**: Zero tolerance validation for remaining theater
 - **Production Deployment**: Final quality gates and deployment readiness
 
-### Key Features Implemented
+## ✨ Key Features
 
 #### Core Systems (Production Ready)
 - **GraphRAG Engine**: Neo4j + OpenAI integration for Pathfinder 2e rules
@@ -84,7 +107,17 @@ Familiar is an AI-powered Game Master assistant for Foundry VTT that has success
 - **Performance Optimization**: Token efficiency and API call optimization
 - **Security Compliance**: Zero critical security issues identified
 
-### Legal & Compliance
+## 🛠️ Technology Stack
+
+- **Frontend**: Foundry VTT Module (JavaScript, WebGL)
+- **Backend**: Node.js, Express.js, WebSocket
+- **AI/ML**: OpenAI GPT-4, DALL-E 3, GraphRAG
+- **Database**: Neo4j (Graph), Vector Store
+- **Analysis**: Python 3.11, NASA POT10 Compliance
+- **Testing**: Jest, pytest, Theater Detection Engine
+- **CI/CD**: GitHub Actions, Docker
+
+## 📝 Legal & Compliance
 
 - **Paizo Community Use Policy**: Full compliance verified
 - **Data Protection**: User privacy and API key security implemented

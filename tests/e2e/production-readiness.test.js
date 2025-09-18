@@ -580,10 +580,10 @@ class ProductionReadinessValidator {
     ];
 
     const sensitivePatterns = [
-      /password\s*=\s*['"].*['"/gi,
-      /secret\s*=\s*['"].*['"/gi,
-      /key\s*=\s*['"].*['"/gi,
-      /token\s*=\s*['"].*['"/gi
+      /password\s*=\s*['"].*['"]/gi,
+      /secret\s*=\s*['"].*['"]/gi,
+      /key\s*=\s*['"].*['"]/gi,
+      /token\s*=\s*['"].*['"]/gi
     ];
 
     // Check for sensitive data in plain text
