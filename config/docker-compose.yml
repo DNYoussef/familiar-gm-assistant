@@ -1,0 +1,235 @@
+version: '3.8'
+
+services:
+  # Main application
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: ${NODE_ENV:-development}
+    container_name: familiar-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=3000
+      - DATABASE_URL=postgresql://familiar:${DB_PASSWORD:-familiar123}@postgres:5432/familiar_${NODE_ENV:-dev}
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-key}
+      - API_BASE_URL=${API_BASE_URL:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../src:/app/src:ro
+      - ../config:/app/config:ro
+      - ../logs:/app/logs
+      - node_modules:/app/node_modules
+    networks:
+      - familiar-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: familiar-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=familiar_${NODE_ENV:-dev}
+      - POSTGRES_USER=familiar
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-familiar123}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - familiar-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U familiar -d familiar_${NODE_ENV:-dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: familiar-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - familiar-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: familiar-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ../logs/nginx:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - familiar-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring and Logging
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: familiar-prometheus
+    restart: unless-stopped
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - familiar-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: familiar-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - familiar-network
+
+  # Log aggregation
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    container_name: familiar-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - familiar-network
+    profiles:
+      - logging
+
+  kibana:
+    image: kibana:8.8.0
+    container_name: familiar-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - familiar-network
+    profiles:
+      - logging
+
+  logstash:
+    image: logstash:8.8.0
+    container_name: familiar-logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ../logs:/logs:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      - familiar-network
+    profiles:
+      - logging
+
+  # Development tools (development profile only)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: familiar-mailhog
+    ports:
+      - "${MAILHOG_PORT:-8025}:8025"
+      - "1025:1025"
+    networks:
+      - familiar-network
+    profiles:
+      - development
+
+  # Testing database for CI/CD
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: familiar-postgres-test
+    environment:
+      - POSTGRES_DB=familiar_test
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - familiar-network
+    profiles:
+      - testing
+
+  # Performance testing
+  k6:
+    image: grafana/k6:latest
+    container_name: familiar-k6
+    volumes:
+      - ../tests/performance:/scripts:ro
+    networks:
+      - familiar-network
+    profiles:
+      - testing
+    command: run /scripts/load-test.js
+
+networks:
+  familiar-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  postgres_data:
+  postgres_test_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:

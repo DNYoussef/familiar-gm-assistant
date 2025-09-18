@@ -1,0 +1,66 @@
+{
+  "parallel_group_A": {
+    "description": "Week 1 - No dependencies, can execute simultaneously",
+    "phases": [
+      {
+        "id": "1.1",
+        "name": "Project Setup",
+        "princess": "Infrastructure",
+        "drones": ["Environment Setup", "CI/CD Pipeline"],
+        "dependencies": []
+      },
+      {
+        "id": "1.2",
+        "name": "RAG Research",
+        "princess": "Research",
+        "drones": ["RAG Research", "Foundry Analysis"],
+        "dependencies": []
+      },
+      {
+        "id": "1.3",
+        "name": "Legal Review",
+        "princess": "Security",
+        "drones": ["Legal Compliance", "Data Protection"],
+        "dependencies": []
+      }
+    ]
+  },
+  "sequential_phase_2": {
+    "description": "Week 2 - Requires Group A completion",
+    "phases": [
+      {
+        "id": "2",
+        "name": "Core Architecture",
+        "princess": "Development",
+        "drones": ["System Architect", "Backend Dev", "Frontend Dev"],
+        "dependencies": ["1.1", "1.2", "1.3"]
+      }
+    ]
+  },
+  "parallel_group_B": {
+    "description": "Week 3-4 - Can execute after Phase 2",
+    "phases": [
+      {
+        "id": "3.1",
+        "name": "Foundry UI Module",
+        "princess": "Development",
+        "drones": ["Frontend Developer", "UI Designer"],
+        "dependencies": ["2"]
+      },
+      {
+        "id": "3.2",
+        "name": "RAG Backend",
+        "princess": "Development",
+        "drones": ["Backend Dev", "Coder"],
+        "dependencies": ["2"]
+      },
+      {
+        "id": "3.3",
+        "name": "Test Framework",
+        "princess": "Quality",
+        "drones": ["Tester", "Code Analyzer"],
+        "dependencies": ["2"]
+      }
+    ]
+  }
+}

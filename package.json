@@ -1,0 +1,76 @@
+{
+  "name": "spek-quality-gates",
+  "version": "1.0.0",
+  "description": "Princess Gate Quality Assurance System - Zero tolerance testing and validation",
+  "main": "quality/quality-gate-runner.js",
+  "bin": {
+    "princess-gate": "./quality/quality-gate-runner.js",
+    "theater-scan": "./quality/theater-detector.js",
+    "reality-check": "./quality/reality-validator.js",
+    "production-check": "./e2e/production-readiness.test.js",
+    "foundry-test": "./integration/foundry-integration.test.js"
+  },
+  "scripts": {
+    "test": "node quality/quality-gate-runner.js audit",
+    "test:theater": "node quality/quality-gate-runner.js theater",
+    "test:reality": "node quality/quality-gate-runner.js reality",
+    "test:production": "node e2e/production-readiness.test.js",
+    "test:integration": "node integration/foundry-integration.test.js",
+    "test:unit": "node unit/test-framework.js",
+    "gate:full": "node quality/quality-gate-runner.js audit",
+    "gate:quick": "npm run test:theater && npm run test:reality",
+    "validate:all": "npm run test && npm run test:production && npm run test:integration"
+  },
+  "keywords": [
+    "quality-assurance",
+    "testing",
+    "validation",
+    "production-readiness",
+    "theater-detection",
+    "reality-validation",
+    "princess-gate",
+    "zero-tolerance"
+  ],
+  "author": "Quality Princess Drone Hive",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "quality-gates": {
+    "theater-threshold": 60,
+    "reality-threshold": 70,
+    "production-threshold": 75,
+    "critical-violations": 0,
+    "high-violations": 2
+  },
+  "princess-domains": {
+    "DATA_PRINCESS": {
+      "required": ["database", "models", "migrations"],
+      "threshold": 60
+    },
+    "INTEGRATION_PRINCESS": {
+      "required": ["api", "services", "webhooks"],
+      "threshold": 40
+    },
+    "FRONTEND_PRINCESS": {
+      "required": ["components", "views", "assets"],
+      "threshold": 40
+    },
+    "BACKEND_PRINCESS": {
+      "required": ["server", "routes", "controllers"],
+      "threshold": 50
+    },
+    "SECURITY_PRINCESS": {
+      "required": ["auth", "middleware", "security-config"],
+      "threshold": 50
+    },
+    "DEVOPS_PRINCESS": {
+      "required": ["ci-cd", "docker", "scripts"],
+      "threshold": 50
+    }
+  }
+}

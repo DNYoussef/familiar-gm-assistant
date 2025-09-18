@@ -1,0 +1,311 @@
+/**
+ * Familiar GM Assistant Styles
+ * Raven familiar UI styling with animations
+ */
+
+/* Main Container */
+.familiar-container {
+    position: fixed;
+    z-index: 1000;
+    user-select: none;
+    pointer-events: auto;
+}
+
+/* Raven Familiar */
+.familiar-raven {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.familiar-raven:hover {
+    transform: scale(1.1);
+}
+
+/* Raven Body Parts */
+.raven-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.raven-head {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 40px;
+    height: 30px;
+    background: radial-gradient(ellipse, #1a1a1a 60%, #000000 100%);
+    border-radius: 50% 50% 40% 40%;
+    z-index: 3;
+}
+
+.raven-eye {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ff4444;
+    border-radius: 50%;
+    top: 8px;
+    animation: blink 4s infinite ease-in-out;
+}
+
+.raven-eye.left-eye {
+    left: 8px;
+}
+
+.raven-eye.right-eye {
+    right: 8px;
+}
+
+.raven-beak {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #333;
+}
+
+.raven-wing {
+    position: absolute;
+    width: 25px;
+    height: 35px;
+    background: linear-gradient(45deg, #1a1a1a 0%, #000000 50%, #333333 100%);
+    border-radius: 60% 40% 40% 60%;
+    z-index: 1;
+    transform-origin: top center;
+}
+
+.raven-wing.left-wing {
+    left: 5px;
+    top: 25px;
+    transform: rotate(-10deg);
+}
+
+.raven-wing.right-wing {
+    right: 5px;
+    top: 25px;
+    transform: rotate(10deg);
+}
+
+.raven-tail {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 15px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 0 0 50% 50%;
+    z-index: 1;
+}
+
+/* Speech Bubble */
+.familiar-speech-bubble {
+    position: absolute;
+    bottom: 90px;
+    right: -20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    max-width: 200px;
+    word-wrap: break-word;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.speech-content {
+    line-height: 1.4;
+}
+
+.speech-arrow {
+    position: absolute;
+    bottom: -8px;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(0, 0, 0, 0.9);
+}
+
+/* Tooltip */
+.familiar-tooltip {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* States */
+.familiar-raven[data-state="idle"] {
+    animation: idle-bob 3s infinite ease-in-out;
+}
+
+.familiar-raven[data-state="listening"] .raven-head {
+    animation: alert-tilt 0.5s ease-in-out;
+}
+
+.familiar-raven[data-state="speaking"] .raven-head {
+    animation: speaking-bob 0.3s infinite ease-in-out;
+}
+
+.familiar-raven[data-state="thinking"] .raven-head {
+    animation: thinking-tilt 2s infinite ease-in-out;
+}
+
+/* Animations */
+@keyframes idle-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes blink {
+    0%, 96%, 100% { transform: scaleY(1); }
+    98% { transform: scaleY(0.1); }
+}
+
+@keyframes alert-tilt {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes speaking-bob {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-1px) scale(1.05); }
+}
+
+@keyframes thinking-tilt {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+}
+
+/* Animation Classes for Actions */
+.familiar-raven.animation-blink .raven-eye {
+    animation: quick-blink 0.3s ease-in-out;
+}
+
+.familiar-raven.animation-head-tilt .raven-head {
+    animation: head-tilt 1s ease-in-out;
+}
+
+.familiar-raven.animation-wing-flutter .raven-wing {
+    animation: wing-flutter 0.8s ease-in-out;
+}
+
+.familiar-raven.animation-look-around .raven-head {
+    animation: look-around 2s ease-in-out;
+}
+
+.familiar-raven.animation-alert {
+    animation: alert-bounce 0.6s ease-in-out;
+}
+
+@keyframes quick-blink {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+}
+
+@keyframes head-tilt {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+}
+
+@keyframes wing-flutter {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+.familiar-raven.animation-wing-flutter .left-wing {
+    animation: left-wing-flutter 0.8s ease-in-out;
+}
+
+.familiar-raven.animation-wing-flutter .right-wing {
+    animation: right-wing-flutter 0.8s ease-in-out;
+}
+
+@keyframes left-wing-flutter {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(-20deg); }
+}
+
+@keyframes right-wing-flutter {
+    0%, 100% { transform: rotate(10deg); }
+    50% { transform: rotate(20deg); }
+}
+
+@keyframes look-around {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+}
+
+@keyframes alert-bounce {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.1) translateY(-5px); }
+}
+
+/* Welcome Message Styling */
+.familiar-welcome {
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    color: #fff;
+    margin: 10px 0;
+}
+
+.familiar-welcome h3 {
+    margin: 0 0 10px 0;
+    color: #ff6b35;
+}
+
+.familiar-welcome p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.familiar-welcome em {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .familiar-raven {
+        width: 60px;
+        height: 60px;
+    }
+
+    .familiar-speech-bubble {
+        max-width: 150px;
+        font-size: 12px;
+    }
+
+    .familiar-tooltip {
+        font-size: 10px;
+    }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "familiar-rag-system",
+  "version": "1.0.0",
+  "description": "Hybrid RAG System for Pathfinder 2e - Familiar Project",
+  "main": "hybrid-rag-core.js",
+  "type": "module",
+  "scripts": {
+    "start": "node hybrid-rag-core.js",
+    "test": "jest",
+    "dev": "nodemon hybrid-rag-core.js",
+    "build-graph": "node scripts/build-knowledge-graph.js",
+    "index-data": "node scripts/index-vector-data.js",
+    "scrape-nethys": "node scripts/scrape-archives.js",
+    "validate-system": "node scripts/validate-rag-system.js"
+  },
+  "dependencies": {
+    "@pinecone-database/pinecone": "^2.0.1",
+    "neo4j-driver": "^5.15.0",
+    "openai": "^4.24.1",
+    "axios": "^1.6.5",
+    "cheerio": "^1.0.0-rc.12",
+    "limiter": "^2.1.0",
+    "redis": "^4.6.12",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.1",
+    "lodash": "^4.17.21",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "@types/node": "^20.10.5",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "pathfinder",
+    "2e",
+    "rag",
+    "graph-rag",
+    "vector-rag",
+    "ai",
+    "gm-assistant",
+    "foundry-vtt"
+  ],
+  "author": "Research Princess - Familiar Project",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/familiar-project/rag-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/familiar-project/rag-system/issues"
+  },
+  "homepage": "https://github.com/familiar-project/rag-system#readme"
+}

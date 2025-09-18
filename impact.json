@@ -1,0 +1,205 @@
+{
+  "hotspots": [
+    {
+      "file": "hybrid-rag-core.js",
+      "type": "core_system",
+      "impact": "high",
+      "description": "Main orchestration engine for GraphRAG + Vector RAG hybrid system",
+      "dependencies": ["graph-rag-engine.js", "vector-rag-engine.js", "query-classifier.js", "cost-optimizer.js"],
+      "risk_level": "medium",
+      "mitigation": "Comprehensive error handling and fallback strategies implemented"
+    },
+    {
+      "file": "graph-rag-engine.js",
+      "type": "knowledge_graph",
+      "impact": "high",
+      "description": "Neo4j-based graph traversal for complex rule relationships",
+      "dependencies": ["neo4j-driver", "openai"],
+      "risk_level": "medium",
+      "mitigation": "Connection pooling and query optimization for production use"
+    },
+    {
+      "file": "vector-rag-engine.js",
+      "type": "semantic_search",
+      "impact": "high",
+      "description": "Pinecone vector database for fast semantic similarity search",
+      "dependencies": ["pinecone-database", "openai"],
+      "risk_level": "low",
+      "mitigation": "Managed service with built-in reliability"
+    },
+    {
+      "file": "archives-connector.js",
+      "type": "data_ingestion",
+      "impact": "medium",
+      "description": "Web scraping pipeline for Archives of Nethys data",
+      "dependencies": ["axios", "cheerio", "limiter"],
+      "risk_level": "high",
+      "mitigation": "Rate limiting, error handling, and respectful scraping practices"
+    }
+  ],
+  "callers": [
+    {
+      "component": "familiar-gm-assistant",
+      "calls": ["hybrid-rag-core.js:processQuery()"],
+      "frequency": "high",
+      "context": "User queries through raven familiar chat interface"
+    },
+    {
+      "component": "foundry-module-integration",
+      "calls": ["hybrid-rag-core.js:processQuery()", "cost-optimizer.js:getSessionSummary()"],
+      "frequency": "medium",
+      "context": "Direct integration with Foundry VTT module system"
+    },
+    {
+      "component": "rules-lookup-widget",
+      "calls": ["vector-rag-engine.js:query()", "cache-manager.js:get()"],
+      "frequency": "high",
+      "context": "Quick rule lookups during gameplay"
+    }
+  ],
+  "configs": [
+    {
+      "file": ".env",
+      "impact": "critical",
+      "description": "API keys and database connection strings",
+      "security_risk": "high",
+      "requirements": ["OPENAI_API_KEY", "PINECONE_API_KEY", "NEO4J_PASSWORD"]
+    },
+    {
+      "file": "package.json",
+      "impact": "high",
+      "description": "Node.js dependencies and deployment scripts",
+      "stability_risk": "medium",
+      "critical_deps": ["neo4j-driver", "@pinecone-database/pinecone", "openai"]
+    },
+    {
+      "file": "cost-optimizer.js:pricing",
+      "impact": "high",
+      "description": "API pricing configuration for cost management",
+      "business_risk": "medium",
+      "update_frequency": "quarterly"
+    }
+  ],
+  "crosscuts": [
+    {
+      "concern": "cost_management",
+      "affects": ["hybrid-rag-core.js", "cost-optimizer.js", "query-classifier.js"],
+      "description": "Cross-cutting cost optimization to maintain <$0.015/session target",
+      "implementation": "Centralized cost tracking with circuit breakers"
+    },
+    {
+      "concern": "caching",
+      "affects": ["cache-manager.js", "hybrid-rag-core.js", "vector-rag-engine.js"],
+      "description": "Performance optimization through intelligent caching",
+      "implementation": "Redis-based multi-level caching with TTL management"
+    },
+    {
+      "concern": "error_handling",
+      "affects": ["hybrid-rag-core.js", "graph-rag-engine.js", "vector-rag-engine.js", "archives-connector.js"],
+      "description": "Graceful degradation and fallback strategies",
+      "implementation": "Hierarchical fallback: Graph -> Vector -> Cached -> Default"
+    },
+    {
+      "concern": "rate_limiting",
+      "affects": ["archives-connector.js", "cost-optimizer.js"],
+      "description": "Respectful API usage and external service interaction",
+      "implementation": "Token bucket algorithm with backoff strategies"
+    }
+  ],
+  "testFocus": [
+    {
+      "area": "query_classification_accuracy",
+      "priority": "high",
+      "description": "Ensure queries route to optimal RAG system (Vector vs Graph vs Hybrid)",
+      "test_cases": [
+        "Simple rule lookups -> Vector RAG",
+        "Complex rule interactions -> Graph RAG",
+        "Medium complexity -> Hybrid approach"
+      ]
+    },
+    {
+      "area": "cost_compliance",
+      "priority": "critical",
+      "description": "Validate session costs remain under $0.015 target",
+      "test_cases": [
+        "10 mixed queries within budget",
+        "Cost tracking accuracy",
+        "Circuit breaker activation"
+      ]
+    },
+    {
+      "area": "response_quality",
+      "priority": "high",
+      "description": "Accuracy and relevance of generated answers",
+      "test_cases": [
+        "Pathfinder 2e rule accuracy >95%",
+        "Source citation correctness",
+        "Multi-hop reasoning validation"
+      ]
+    },
+    {
+      "area": "performance_benchmarks",
+      "priority": "medium",
+      "description": "Response time targets and system scalability",
+      "test_cases": [
+        "<2 seconds average response time",
+        "Cache hit rate >80%",
+        "Concurrent query handling"
+      ]
+    },
+    {
+      "area": "failover_resilience",
+      "priority": "high",
+      "description": "System behavior under failure conditions",
+      "test_cases": [
+        "Neo4j connection failure -> Vector fallback",
+        "Pinecone outage -> Cached responses",
+        "API rate limit handling"
+      ]
+    }
+  ],
+  "citations": [
+    {
+      "source": "Microsoft GraphRAG Research Paper",
+      "relevance": "high",
+      "application": "Graph-based knowledge representation and multi-hop reasoning implementation",
+      "url": "https://arxiv.org/abs/2404.16130"
+    },
+    {
+      "source": "Archives of Nethys API Documentation",
+      "relevance": "critical",
+      "application": "Data source structure and scraping guidelines for Pathfinder 2e content",
+      "url": "https://2e.aonprd.com"
+    },
+    {
+      "source": "Pinecone Vector Database Best Practices",
+      "relevance": "high",
+      "application": "Optimal indexing strategies for semantic search performance",
+      "url": "https://docs.pinecone.io/docs/overview"
+    },
+    {
+      "source": "Neo4j Cypher Query Optimization",
+      "relevance": "medium",
+      "application": "Graph traversal performance for complex rule relationship queries",
+      "url": "https://neo4j.com/docs/cypher-manual/"
+    },
+    {
+      "source": "OpenAI Embedding Model Documentation",
+      "relevance": "medium",
+      "application": "Text-embedding-ada-002 usage for semantic similarity calculation",
+      "url": "https://platform.openai.com/docs/guides/embeddings"
+    },
+    {
+      "source": "Foundry VTT Module Development Guide",
+      "relevance": "high",
+      "application": "Integration patterns for raven familiar UI and chat system",
+      "url": "https://foundryvtt.com/article/module-development/"
+    },
+    {
+      "source": "Paizo Community Use Policy",
+      "relevance": "critical",
+      "application": "Legal compliance for Pathfinder 2e content usage and distribution",
+      "url": "https://paizo.com/community/communityuse"
+    }
+  ]
+}

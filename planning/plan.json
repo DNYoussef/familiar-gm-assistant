@@ -1,0 +1,222 @@
+{
+  "project": "Familiar: GM Assistant for Foundry VTT",
+  "iteration": 1,
+  "phase": "Loop 1: Discovery & Planning",
+  "created": "2025-09-18",
+  "vision": "AI-powered Game Master assistant as clickable raven familiar in Foundry VTT for Pathfinder 2e",
+
+  "core_components": {
+    "ui_layer": {
+      "description": "Raven familiar interface and chat system",
+      "priority": "high",
+      "complexity": "medium"
+    },
+    "rules_engine": {
+      "description": "Hybrid RAG system for Pathfinder 2e rules",
+      "priority": "critical",
+      "complexity": "high"
+    },
+    "content_generator": {
+      "description": "Monster, encounter, and treasure generation",
+      "priority": "high",
+      "complexity": "high"
+    },
+    "art_pipeline": {
+      "description": "Two-phase AI art generation system",
+      "priority": "medium",
+      "complexity": "medium"
+    },
+    "foundry_integration": {
+      "description": "Module framework and API integration",
+      "priority": "critical",
+      "complexity": "medium"
+    }
+  },
+
+  "tasks": [
+    {
+      "id": "research-001",
+      "title": "Foundry VTT Module Architecture Research",
+      "type": "small",
+      "scope": "Investigate Foundry v11+ module development patterns, API hooks, and best practices",
+      "verify_cmds": ["node scripts/research-validate.js foundry"],
+      "budget_loc": 0,
+      "budget_files": 0,
+      "acceptance": [
+        "Document Foundry module manifest requirements",
+        "Identify key API hooks for canvas integration",
+        "Research WebGL-safe rendering patterns",
+        "Find examples of successful UI overlay modules"
+      ],
+      "dependencies": [],
+      "priority": "critical",
+      "estimated_hours": 4
+    },
+    {
+      "id": "research-002",
+      "title": "Pathfinder 2e Data Source Analysis",
+      "type": "small",
+      "scope": "Research Archives of Nethys API, data structure, and legal compliance",
+      "verify_cmds": ["node scripts/research-validate.js pathfinder"],
+      "budget_loc": 0,
+      "budget_files": 0,
+      "acceptance": [
+        "Document Archives of Nethys API capabilities",
+        "Verify Paizo Community Use Policy compliance",
+        "Identify data structure for rules, monsters, items",
+        "Research rate limits and access patterns"
+      ],
+      "dependencies": [],
+      "priority": "critical",
+      "estimated_hours": 3
+    },
+    {
+      "id": "research-003",
+      "title": "Hybrid RAG Architecture Design",
+      "type": "small",
+      "scope": "Research GraphRAG + Vector search implementation patterns",
+      "verify_cmds": ["node scripts/research-validate.js rag"],
+      "budget_loc": 0,
+      "budget_files": 0,
+      "acceptance": [
+        "Document GraphRAG implementation options",
+        "Research vector database choices (Pinecone, Weaviate, etc)",
+        "Identify multi-hop reasoning frameworks",
+        "Plan embedding strategy for Pathfinder rules"
+      ],
+      "dependencies": ["research-002"],
+      "priority": "high",
+      "estimated_hours": 6
+    },
+    {
+      "id": "research-004",
+      "title": "AI Art Generation API Assessment",
+      "type": "small",
+      "scope": "Evaluate DALL-E 3, Midjourney, and Gemini 2.5 Flash capabilities",
+      "verify_cmds": ["node scripts/research-validate.js art"],
+      "budget_loc": 0,
+      "budget_files": 0,
+      "acceptance": [
+        "Compare API costs and rate limits",
+        "Test image generation quality for D&D/fantasy art",
+        "Verify Gemini 2.5 Flash editing capabilities",
+        "Document workflow for two-phase system"
+      ],
+      "dependencies": [],
+      "priority": "medium",
+      "estimated_hours": 4
+    },
+    {
+      "id": "architecture-001",
+      "title": "System Architecture Design",
+      "type": "multi",
+      "scope": "Design overall system architecture with performance constraints",
+      "verify_cmds": ["node scripts/architecture-validate.js"],
+      "budget_loc": 100,
+      "budget_files": 5,
+      "acceptance": [
+        "Create component interaction diagrams",
+        "Design data flow for <2 second response time",
+        "Plan caching strategy for common queries",
+        "Define API abstraction layers"
+      ],
+      "dependencies": ["research-001", "research-002", "research-003"],
+      "priority": "critical",
+      "estimated_hours": 8
+    },
+    {
+      "id": "prototype-001",
+      "title": "Foundry Module Foundation",
+      "type": "small",
+      "scope": "Create basic Foundry module with raven familiar UI",
+      "verify_cmds": ["npm test", "npm run lint"],
+      "budget_loc": 200,
+      "budget_files": 8,
+      "acceptance": [
+        "Working Foundry module manifest",
+        "Basic raven sprite animation",
+        "Clickable UI overlay",
+        "Chat window framework"
+      ],
+      "dependencies": ["research-001", "architecture-001"],
+      "priority": "high",
+      "estimated_hours": 12
+    },
+    {
+      "id": "rules-mvp-001",
+      "title": "Rules Engine MVP",
+      "type": "multi",
+      "scope": "Implement basic RAG system for Pathfinder 2e rules",
+      "verify_cmds": ["npm test", "npm run typecheck"],
+      "budget_loc": 300,
+      "budget_files": 10,
+      "acceptance": [
+        "Basic vector search functionality",
+        "Integration with Archives of Nethys data",
+        "Simple query processing",
+        "Source citation system"
+      ],
+      "dependencies": ["research-002", "research-003", "architecture-001"],
+      "priority": "critical",
+      "estimated_hours": 16
+    }
+  ],
+
+  "critical_path": [
+    "research-001",
+    "research-002",
+    "research-003",
+    "architecture-001",
+    "prototype-001",
+    "rules-mvp-001"
+  ],
+
+  "risks": [
+    {
+      "description": "Foundry VTT API compatibility issues",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Early prototype testing, community consultation"
+    },
+    {
+      "description": "Archives of Nethys API rate limiting",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "Aggressive caching, local data mirroring"
+    },
+    {
+      "description": "AI API costs exceeding budget",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Usage monitoring, fallback to cheaper models"
+    },
+    {
+      "description": "Performance target (<2s) not achievable",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Background processing, predictive caching"
+    },
+    {
+      "description": "Legal compliance with Paizo policies",
+      "impact": "critical",
+      "probability": "low",
+      "mitigation": "Legal review, community use guidelines adherence"
+    }
+  ],
+
+  "success_criteria": [
+    "All research tasks completed with documented findings",
+    "System architecture approved by technical review",
+    "Working Foundry module prototype",
+    "Basic rules query functionality operational",
+    "Performance benchmarks within targets",
+    "Legal compliance verified"
+  ],
+
+  "next_iteration_focus": [
+    "Content generation system implementation",
+    "Advanced RAG features (multi-hop reasoning)",
+    "AI art pipeline integration",
+    "User testing and feedback incorporation"
+  ]
+}

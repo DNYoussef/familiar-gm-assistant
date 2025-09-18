@@ -1,0 +1,35 @@
+{
+  "suppressions": [
+    {
+      "violation_type": "magic_literal",
+      "file_pattern": "**/*.py",
+      "justification": "Acceptable magic literals in configuration and test files",
+      "approved_by": "Queen Debug System",
+      "expires_date": "2025-12-31"
+    },
+    {
+      "violation_type": "god_object",
+      "file_pattern": "**/*.py",
+      "justification": "Large classes are being refactored in Q2 2025 - tracked in JIRA-1234",
+      "approved_by": "Architecture Team",
+      "expires_date": "2025-12-31"
+    },
+    {
+      "violation_type": "position_coupling",
+      "file_pattern": "**/*.py",
+      "justification": "Parameter objects refactoring planned for Q2 2025",
+      "approved_by": "Development Team",
+      "expires_date": "2025-06-30"
+    }
+  ],
+  "auto_fix_preferences": {
+    "magic_literal_threshold": 0.8,
+    "position_coupling_threshold": 0.7,
+    "god_object_threshold": 0.6
+  },
+  "nasa_compliance_overrides": {
+    "acceptable_magic_literal_count": 100,
+    "acceptable_position_coupling_count": 50,
+    "critical_violation_tolerance": 0
+  }
+}

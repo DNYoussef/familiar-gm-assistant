@@ -1,0 +1,175 @@
+{
+  "hotspots": [
+    {
+      "area": "Foundry VTT Canvas Integration",
+      "complexity": "high",
+      "risk": "medium",
+      "description": "WebGL/PixiJS canvas integration for familiar UI overlays",
+      "impact": "Core functionality depends on stable canvas API integration"
+    },
+    {
+      "area": "PF2e System Hooks",
+      "complexity": "medium",
+      "risk": "low",
+      "description": "Integration with PF2e system hooks for combat and action economy",
+      "impact": "Familiar actions must align with PF2e's turn-based mechanics"
+    },
+    {
+      "area": "Module Manifest & Distribution",
+      "complexity": "low",
+      "risk": "low",
+      "description": "Proper module.json configuration and GitHub releases setup",
+      "impact": "Critical for module discovery and automatic updates"
+    },
+    {
+      "area": "HUD Overlay System",
+      "complexity": "medium",
+      "risk": "low",
+      "description": "Non-blocking UI overlays using Foundry's HUD framework",
+      "impact": "Primary interface method - must not interfere with gameplay"
+    }
+  ],
+  "callers": [
+    {
+      "component": "Foundry VTT Canvas API",
+      "methods": ["canvas.interface.grid", "canvas.layers", "HeadsUpDisplay"],
+      "frequency": "high",
+      "stability": "unstable - breaks between versions"
+    },
+    {
+      "component": "PF2e System Hooks",
+      "methods": ["pf2e.rollInitiative", "pf2e.rollDamage", "createActor", "updateActor"],
+      "frequency": "medium",
+      "stability": "stable"
+    },
+    {
+      "component": "Foundry Hooks System",
+      "methods": ["Hooks.on", "Hooks.once", "Hooks.call", "Hooks.callAll"],
+      "frequency": "high",
+      "stability": "stable"
+    },
+    {
+      "component": "Document Flag System",
+      "methods": ["actor.getFlag", "actor.setFlag", "actor.update"],
+      "frequency": "medium",
+      "stability": "stable"
+    }
+  ],
+  "configs": [
+    {
+      "file": "module.json",
+      "critical": true,
+      "purpose": "Module manifest defining compatibility, dependencies, and metadata",
+      "requirements": ["semantic versioning", "stable URLs", "PF2e system dependency"]
+    },
+    {
+      "file": "main.js",
+      "critical": true,
+      "purpose": "ES6 module entry point for initialization and hook registration",
+      "requirements": ["proper namespacing", "libWrapper integration", "error handling"]
+    },
+    {
+      "file": "familiar-ui.js",
+      "critical": true,
+      "purpose": "HUD overlay implementation and canvas integration",
+      "requirements": ["non-blocking design", "performance optimization", "responsive layout"]
+    },
+    {
+      "file": "pf2e-integration.js",
+      "critical": false,
+      "purpose": "PF2e-specific system hooks and action integration",
+      "requirements": ["action economy compliance", "combat turn handling"]
+    }
+  ],
+  "crosscuts": [
+    {
+      "concern": "Performance Optimization",
+      "affects": ["Canvas rendering", "Memory management", "Asset loading"],
+      "mitigation": "Implement texture caching, lazy loading, and proper cleanup"
+    },
+    {
+      "concern": "Version Compatibility",
+      "affects": ["Canvas API", "Hook system", "PF2e integration"],
+      "mitigation": "Use compatibility flags and version-specific feature detection"
+    },
+    {
+      "concern": "User Experience",
+      "affects": ["UI responsiveness", "Gameplay integration", "Settings management"],
+      "mitigation": "Non-blocking overlays, configurable interfaces, proper error feedback"
+    },
+    {
+      "concern": "Security & Validation",
+      "affects": ["Data persistence", "User input", "Module permissions"],
+      "mitigation": "Input validation, secure flag usage, proper error boundaries"
+    }
+  ],
+  "testFocus": [
+    {
+      "area": "Canvas Integration",
+      "priority": "high",
+      "tests": [
+        "HUD overlay renders without blocking gameplay",
+        "Grid highlighting works correctly for familiar actions",
+        "Canvas layers integrate properly with interface group",
+        "Performance remains stable with multiple familiars"
+      ]
+    },
+    {
+      "area": "PF2e System Integration",
+      "priority": "high",
+      "tests": [
+        "Familiar actions integrate with PF2e action economy",
+        "Combat initiative handling works correctly",
+        "Character sheet integration functions properly",
+        "Damage and effect hooks trigger appropriately"
+      ]
+    },
+    {
+      "area": "Module Lifecycle",
+      "priority": "medium",
+      "tests": [
+        "Module loads correctly across Foundry versions",
+        "Settings persist and apply correctly",
+        "Data flags save and restore properly",
+        "Module conflicts are handled gracefully"
+      ]
+    },
+    {
+      "area": "Performance & Compatibility",
+      "priority": "medium",
+      "tests": [
+        "WebGL compatibility across browsers",
+        "Memory usage remains within acceptable limits",
+        "Large scene performance impact minimal",
+        "Asset loading optimized for various connection speeds"
+      ]
+    }
+  ],
+  "citations": [
+    {
+      "source": "Foundry VTT Official Documentation",
+      "url": "https://foundryvtt.com/article/module-development/",
+      "relevance": "Primary reference for module architecture and manifest requirements"
+    },
+    {
+      "source": "Foundry VTT Canvas API Documentation",
+      "url": "https://foundryvtt.com/api/v13/classes/client.Canvas.html",
+      "relevance": "Technical specification for canvas integration and layer management"
+    },
+    {
+      "source": "Foundry VTT Community Wiki - PIXI Integration",
+      "url": "https://foundryvtt.wiki/en/development/guides/pixi",
+      "relevance": "Best practices for WebGL/PixiJS performance optimization"
+    },
+    {
+      "source": "PF2e System Content Module Guide",
+      "url": "https://github.com/foundryvtt/pf2e/wiki/Creating-a-PF2e-Content-Module",
+      "relevance": "System-specific integration requirements and best practices"
+    },
+    {
+      "source": "Package Development Best Practices",
+      "url": "https://foundryvtt.wiki/en/development/guides/package-best-practices",
+      "relevance": "Industry standards for module development and distribution"
+    }
+  ]
+}
