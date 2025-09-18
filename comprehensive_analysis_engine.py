@@ -621,5 +621,3 @@ def calculate_metrics(data):
     # Log results for debugging instead of printing
     logger.info(f"Analysis completed: {len(result.syntax_issues)} issues found")
     logger.debug(f"Analysis results: {json.dumps(result.__dict__, indent=2, default=str)}")
-
-    return result

@@ -1,76 +1,108 @@
 {
-  "name": "spek-quality-gates",
+  "name": "familiar-gm-assistant",
   "version": "1.0.0",
-  "description": "Princess Gate Quality Assurance System - Zero tolerance testing and validation",
-  "main": "quality/quality-gate-runner.js",
-  "bin": {
-    "princess-gate": "./quality/quality-gate-runner.js",
-    "theater-scan": "./quality/theater-detector.js",
-    "reality-check": "./quality/reality-validator.js",
-    "production-check": "./e2e/production-readiness.test.js",
-    "foundry-test": "./integration/foundry-integration.test.js"
-  },
+  "description": "AI-powered Game Master assistant for Foundry VTT with Queen-Princess-Drone architecture",
+  "main": "src/api-server.js",
   "scripts": {
-    "test": "node quality/quality-gate-runner.js audit",
-    "test:theater": "node quality/quality-gate-runner.js theater",
-    "test:reality": "node quality/quality-gate-runner.js reality",
-    "test:production": "node e2e/production-readiness.test.js",
-    "test:integration": "node integration/foundry-integration.test.js",
-    "test:unit": "node unit/test-framework.js",
-    "gate:full": "node quality/quality-gate-runner.js audit",
-    "gate:quick": "npm run test:theater && npm run test:reality",
-    "validate:all": "npm run test && npm run test:production && npm run test:integration"
+    "start": "node src/api-server.js",
+    "dev": "nodemon src/api-server.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:production": "npm run build && npm run optimize",
+    "build:client": "webpack --mode production",
+    "build:server": "node scripts/build-server.js",
+    "optimize": "node scripts/optimize-assets.js",
+
+    "test": "jest",
+    "test:unit": "jest tests/unit/",
+    "test:integration": "jest tests/integration/",
+    "test:e2e": "jest tests/e2e/",
+    "test:smoke-production": "jest tests/smoke/",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "typecheck": "jsdoc -t templates/haruki -d docs/api/ -r src/",
+    "security-scan": "npm audit --audit-level moderate",
+
+    "performance:benchmark": "node tests/performance/benchmark.js",
+    "performance:production-validate": "node tests/performance/production-validation.js",
+    "health:production-check": "node scripts/health-check.js",
+
+    "package:foundry-module": "node scripts/package-foundry-module.js",
+    "deploy:foundry": "node scripts/deploy-foundry.js",
+    "deploy:api-server": "node scripts/deploy-api-server.js",
+    "deploy:docs": "node scripts/deploy-documentation.js",
+
+    "queen:development-fixes": "node QueenDebugOrchestrator.js --domain development --mode auto-fix",
+    "queen:quality-fixes": "node QueenDebugOrchestrator.js --domain quality --mode theater-elimination",
+    "queen:coordination-fixes": "node QueenDebugOrchestrator.js --domain coordination --mode workflow-implementation",
+
+    "analyzer:theater-detection": "python comprehensive_analysis_engine.py --mode theater-detection",
+    "analyzer:production-assessment": "python comprehensive_analysis_engine.py --mode production-assessment",
+    "analyzer:quality-scan": "python comprehensive_analysis_engine.py --mode quality-scan"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.14.2",
+    "neo4j-driver": "^5.13.0",
+    "openai": "^4.12.4",
+    "axios": "^1.5.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "rate-limiter-flexible": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "joi": "^17.10.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.49.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "jsdoc": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/risk-dashboard/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/familiar-gm-assistant.git"
   },
   "keywords": [
-    "quality-assurance",
-    "testing",
-    "validation",
-    "production-readiness",
-    "theater-detection",
-    "reality-validation",
-    "princess-gate",
-    "zero-tolerance"
+    "foundry-vtt",
+    "pathfinder-2e",
+    "ai-assistant",
+    "game-master",
+    "rpg",
+    "graphrag",
+    "neo4j",
+    "queen-princess-drone",
+    "theater-detection"
   ],
-  "author": "Quality Princess Drone Hive",
-  "license": "MIT",
-  "dependencies": {
-    "axios": "^1.6.0"
-  },
-  "devDependencies": {},
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "quality-gates": {
-    "theater-threshold": 60,
-    "reality-threshold": 70,
-    "production-threshold": 75,
-    "critical-violations": 0,
-    "high-violations": 2
-  },
-  "princess-domains": {
-    "DATA_PRINCESS": {
-      "required": ["database", "models", "migrations"],
-      "threshold": 60
-    },
-    "INTEGRATION_PRINCESS": {
-      "required": ["api", "services", "webhooks"],
-      "threshold": 40
-    },
-    "FRONTEND_PRINCESS": {
-      "required": ["components", "views", "assets"],
-      "threshold": 40
-    },
-    "BACKEND_PRINCESS": {
-      "required": ["server", "routes", "controllers"],
-      "threshold": 50
-    },
-    "SECURITY_PRINCESS": {
-      "required": ["auth", "middleware", "security-config"],
-      "threshold": 50
-    },
-    "DEVOPS_PRINCESS": {
-      "required": ["ci-cd", "docker", "scripts"],
-      "threshold": 50
-    }
-  }
+  "author": "Queen-Princess-Drone Development Hierarchy",
+  "license": "MIT"
 }
